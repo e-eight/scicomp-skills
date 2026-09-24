@@ -1,0 +1,25 @@
+<style>
+  /* Overrides for pandoc's default template, which is sized for prose at 36em. Notes are
+     mostly tables, equations, and lists, so the page uses most of the window instead. */
+  body {
+    max-width: min(80rem, 100%);
+    padding: 2.5rem 4vw;
+    box-sizing: border-box;
+    hyphens: manual;
+  }
+  @media (max-width: 600px) {
+    body { padding: 12px; }
+  }
+
+  /* Tables: ruled rows, and a scrollbar rather than squeezed columns when too wide. */
+  table { width: auto; max-width: 100%; }
+  th, td { border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  th { text-align: left; }
+  tbody tr:nth-child(even) { background-color: #f6f6f6; }
+
+  /* Long display equations scroll sideways instead of running off the page. */
+  mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+
+  li { margin: 0.2em 0; }
+  li > p { margin: 0.3em 0; }
+</style>

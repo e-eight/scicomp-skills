@@ -28,6 +28,10 @@ from pathlib import Path
 
 OUT_DIR = Path("notes") / "_html"
 FILTER = Path(__file__).resolve().parent / "md_links.lua"
+STYLE = FILTER.with_name("style.html")
+# Pandoc's own Markdown needs a blank line before a list; GitHub's doesn't, and notes are
+# usually written the GitHub way. Without this, "Assumptions:\n- a\n- b" is one paragraph.
+FROM = "markdown+lists_without_preceding_blankline"
 DOCKER_IMAGE = "pandoc/core"
 # Pinned explicitly: distro pandoc builds default to a local MathJax 2 path that usually
 # doesn't exist. MathJax 4 handles \tag inside display math.
@@ -57,7 +61,7 @@ def output_for(src: Path) -> Path:
 
 def pandoc_command(root: Path) -> list[str] | None:
     if shutil.which("pandoc"):
-        return ["pandoc", "--lua-filter", str(FILTER)]
+        return ["pandoc", "--lua-filter", str(FILTER), "--include-in-header", str(STYLE)]
     if shutil.which("docker"):
         user = f"{os.getuid()}:{os.getgid()}" if hasattr(os, "getuid") else None
         return [
@@ -65,7 +69,9 @@ def pandoc_command(root: Path) -> list[str] | None:
             *(["-u", user] if user else []),
             "-v", f"{root}:/data", "-w", "/data",
             "-v", f"{FILTER.parent}:/skill:ro",
-            DOCKER_IMAGE, "--lua-filter", f"/skill/{FILTER.name}",
+            DOCKER_IMAGE,
+            "--lua-filter", f"/skill/{FILTER.name}",
+            "--include-in-header", f"/skill/{STYLE.name}",
         ]
     return None
 
@@ -93,16 +99,21 @@ def render(root: Path, files: list[str], force: bool) -> int:
     out_root.mkdir(parents=True, exist_ok=True)
     (out_root / ".gitignore").write_text("*\n")
 
+    # A change to the renderer itself (this script, the filter, the stylesheet) makes every
+    # page stale, not just the ones whose notes changed.
+    renderer_mtime = max(p.stat().st_mtime for p in (Path(__file__), FILTER, STYLE))
+
     rendered = failed = 0
     for src in sources:
         out = output_for(src)
         html = root / out
-        if not force and html.exists() and html.stat().st_mtime >= (root / src).stat().st_mtime:
+        newest_input = max((root / src).stat().st_mtime, renderer_mtime)
+        if not force and html.exists() and html.stat().st_mtime >= newest_input:
             continue
         html.parent.mkdir(parents=True, exist_ok=True)
         cmd = base + [
             str(src), "-o", str(out),
-            "--from", "markdown", "--standalone", f"--mathjax={MATHJAX_URL}",
+            "--from", FROM, "--standalone", f"--mathjax={MATHJAX_URL}",
             "--metadata", f"pagetitle={src.stem}",
         ]
         result = subprocess.run(cmd, cwd=root, capture_output=True, text=True)

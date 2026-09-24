@@ -42,7 +42,19 @@ Write math the way pandoc Markdown expects: `$...$` inline with no space inside 
 dollars, and `$$...$$` for display. If an equation shows up as raw TeX in the page, the
 delimiters are the first thing to check.
 
+## Layout and lists
+
+`scripts/style.html` goes in after pandoc's default stylesheet and widens the page from
+pandoc's 36em to most of the window, rules and stripes table rows, and lets tables and long
+equations scroll sideways rather than overflow. Edit it to change the look.
+
+Notes are read as pandoc Markdown with `lists_without_preceding_blankline`, so a list
+directly under a line of text renders as a list, the way it does on GitHub. A nested list
+still has to be indented to line up with its parent item's text: two spaces under `-`,
+three under `1.`.
+
 ## Stale pages
 
-A page is re-rendered when its source is newer. Pages for notes that were renamed or deleted
+A page is re-rendered when its source is newer, or when anything in `scripts/` is — so
+editing the stylesheet refreshes every page on the next run. Pages for notes that were renamed or deleted
 are not removed. `rm -rf notes/_html` clears everything, and the next run rebuilds it.
