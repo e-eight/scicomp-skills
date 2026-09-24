@@ -64,7 +64,8 @@ npx skills@latest add e-eight/scicomp-skills
 
 The CLI installs only the skills. Get `templates/` separately from
 [the repo](https://github.com/e-eight/scicomp-skills/tree/main/templates): copy `notes/`
-to your repo root, and `layers.json.example` to `.layers.json` if you use `check_layers.py`.
+to your repo root, and if you use `check_layers.py`, copy `layers.json.example` to
+`.layers.json` at your repo root too.
 
 Take the editable install rather than a managed plugin bundle. You will rewrite parts of
 these within a week of using them, and that's the point.
