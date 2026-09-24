@@ -34,23 +34,26 @@ reusable discipline and can be reached for automatically when the task fits.
 | `numerics-review` | Review a diff on a third axis beyond standards and spec: conditioning, precision, seeds, conventions, silent failure. |
 | `scale-down-first` | toy → smoke → pilot → production. Never burn an allocation on an untested path. |
 | `layer-separation` | model / method / driver / analysis, with a one-way dependency rule and a `check_layers.py` for CI. Only for codebases outliving their first paper. |
+| `render-notes` | Renders `notes/` and `CONVENTIONS.md` to HTML with pandoc (local or Docker) so math and tables are readable. Runs only when you ask. Output stays local. |
 
 ## Contents
 
 ```
-skills/                     ten SKILL.md files, three with bundled scripts
+skills/                     eleven SKILL.md files, four with bundled scripts
   derive/scripts/check_identity.py        randomized symbolic identity verification
   run-provenance/scripts/manifest.py      stdlib-only run manifest writer
   layer-separation/scripts/check_layers.py  import-graph layer checker for CI
+  render-notes/scripts/render.py          pandoc wrapper: notes/*.md -> notes/_html/
   setup-scicomp-skills/assets/CONVENTIONS.template.md
 templates/
   notes/                    stubbed notes directory — copy to your repo root
   layers.json.example       rename to .layers.json for check_layers.py
 ```
 
-The three scripts are stdlib-only except `check_identity.py`, which needs sympy. All three
-run standalone: `python manifest.py <dir>`, `python check_identity.py` (self-test),
-`python check_layers.py <repo>`.
+The four scripts are stdlib-only except `check_identity.py`, which needs sympy. `render.py`
+also needs `pandoc` or `docker` on PATH. All four run standalone:
+`python manifest.py <dir>`, `python check_identity.py` (self-test),
+`python check_layers.py <repo>`, `python render.py` (from the repo root).
 
 ## Install
 

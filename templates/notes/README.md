@@ -43,3 +43,4 @@ exactly this reason.
 | `experiments/YYYY-MM-DD-*.md` | `design-experiment` |
 | `decisions/NNNN-*.md` | `derive`, `setup-scicomp-skills`, `layer-separation` |
 | `log.md` | `handoff` |
+| `_html/` | `render-notes`, on request. Generated, git-ignored, safe to delete |
