@@ -1,0 +1,9 @@
+{
+  "package": "myproject",
+  "layers": {
+    "model":    ["src/myproject/model/**"],
+    "method":   ["src/myproject/method/**"],
+    "driver":   ["src/myproject/driver/**", "scripts/run_*.py"],
+    "analysis": ["src/myproject/analysis/**", "scripts/plot_*.py"]
+  }
+}
