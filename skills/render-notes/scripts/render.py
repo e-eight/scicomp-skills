@@ -30,8 +30,8 @@ OUT_DIR = Path("notes") / "_html"
 FILTER = Path(__file__).resolve().parent / "md_links.lua"
 DOCKER_IMAGE = "pandoc/core"
 # Pinned explicitly: distro pandoc builds default to a local MathJax 2 path that usually
-# doesn't exist. MathJax 3 handles \tag inside display math.
-MATHJAX_URL = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+# doesn't exist. MathJax 4 handles \tag inside display math.
+MATHJAX_URL = "https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"
 # Older pandoc releases add a polyfill.io script next to MathJax. That domain changed
 # hands in 2024 and served malware, so the tag is stripped from every page.
 POLYFILL_TAG = re.compile(r'[ \t]*<script src="https://polyfill\.io/[^"]*"></script>\n?')
@@ -77,7 +77,16 @@ def render(root: Path, files: list[str], force: bool) -> int:
         return 2
 
     if files:
-        sources = [Path(f).resolve().relative_to(root) for f in files]
+        sources = []
+        for f in files:
+            # Relative paths work from the current directory or from the repo root.
+            path = (Path(f) if Path(f).exists() else root / f).resolve()
+            if not path.is_file():
+                print(f"{f} does not exist; skipped.", file=sys.stderr)
+            elif not path.is_relative_to(root):
+                print(f"{f} is not inside {root}; skipped.", file=sys.stderr)
+            else:
+                sources.append(path.relative_to(root))
     else:
         sources = find_sources(root)
     out_root = root / OUT_DIR

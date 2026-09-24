@@ -34,7 +34,7 @@ Report that to the user and suggest one of the two. Don't try to install either.
 
 ## Math
 
-Rendered with MathJax 3, loaded from jsDelivr, so a page needs a network connection to show
+Rendered with MathJax 4, loaded from jsDelivr, so a page needs a network connection to show
 its math. MathML would work offline, but pandoc's MathML writer silently drops `\tag{N}`,
 and those equation numbers are what code cites. Don't switch to it.
 
