@@ -37,6 +37,31 @@ Search the actual literature rather than answering from memory. Recall of specif
 their claims, and their numbers is unreliable at exactly the level of detail that matters
 here, and a confidently wrong citation is worse than none.
 
+### Access
+
+Use the official APIs, not the websites. arXiv and the citation indexes rate-limit and block
+scrapers, and a blocked agent quietly returns a thinner map.
+
+- **arXiv** through `export.arxiv.org/api/query`, never `arxiv.org/search` or listing pages,
+  which its `robots.txt` disallows or throttles for automated use. One request every three
+  seconds, one connection at a time.
+- **Backward and forward** through the Semantic Scholar Graph API's `/paper/{id}/references`
+  and `/paper/{id}/citations`, with `fields=contexts,intents,isInfluential`. The contexts
+  are the sentences where each citing paper mentions the anchor, which is the *why* the
+  forward step asks for. It takes arXiv IDs directly as `ARXIV:<id>`. OpenAlex is the
+  second source when coverage is thin.
+- **Field-specific indexes** where they fit: INSPIRE-HEP for high-energy physics, NASA ADS
+  for astrophysics (needs a token), PubMed E-utilities for biomedicine.
+
+Requests go one at a time per service, never in parallel. On a `429`, back off and retry
+later rather than pushing through. Read `S2_API_KEY`, `OPENALEX_API_KEY`, and `ADS_API_TOKEN`
+from the environment when set. When they aren't, run without them and tell the user once
+that a free key helps; OpenAlex in particular allows almost nothing without one. Never
+write a key into the notes.
+
+Fetching an individual paper's abstract page or HTML version to read it is fine. Crawling
+search results or listings is not.
+
 ## What to record per paper
 
 For each paper that matters, write in your own words — never paste abstracts or extended
