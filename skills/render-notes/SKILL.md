@@ -18,6 +18,7 @@ From the repo root, where `<skill-dir>` is the directory holding this file:
 python <skill-dir>/scripts/render.py              # every note that changed since last render
 python <skill-dir>/scripts/render.py notes/derivations/03-foo.md   # just one
 python <skill-dir>/scripts/render.py --force      # everything, e.g. after upgrading pandoc
+python <skill-dir>/scripts/render.py --check      # only check the math delimiters
 ```
 
 `notes/derivations/03-foo.md` becomes `notes/_html/derivations/03-foo.html`, and
@@ -39,8 +40,15 @@ its math. MathML would work offline, but pandoc's MathML writer silently drops `
 and those equation numbers are what code cites. Don't switch to it.
 
 Write math the way pandoc Markdown expects: `$...$` inline with no space inside the
-dollars, and `$$...$$` for display. If an equation shows up as raw TeX in the page, the
-delimiters are the first thing to check.
+dollars, and `$$...$$` for display. Anything else (bare `\epsilon`, `x^2` or `H_0` in
+prose, `\(...\)`, TeX in backticks) shows up in the page as plain text or code.
+
+Before rendering a note, the script checks it for exactly these and prints a `WARNING`
+with the file and line for each one. The note still renders. When there are warnings,
+list them for the user and offer to fix the note. Don't edit it without asking, because
+nothing here changes a note. `render.py --check [file.md ...]` runs only the check,
+renders nothing, and exits 1 if it finds anything. The check doesn't flag Unicode
+symbols like ε or →, which render fine as text.
 
 ## Layout and lists
 

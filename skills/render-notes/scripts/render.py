@@ -10,10 +10,14 @@ the HTML loads MathJax from a CDN, so math needs a network connection to display
 The output directory carries its own `.gitignore` containing `*`, so it is never
 committed and the repo's own `.gitignore` needs no edit. Usage:
 
-    python render.py [--root DIR] [--force] [file.md ...]
+    python render.py [--root DIR] [--force | --check] [file.md ...]
 
 With no files, renders every note whose HTML is missing or older than its source.
 Delete notes/_html/ to clear out pages for notes that no longer exist.
+
+Each note is checked for inline math outside $...$ (bare TeX commands, sub- and
+superscripts, \\( delimiters, a space just inside the dollars), since pandoc prints that
+as plain text. Problems are warnings: the note still renders. --check runs only this.
 """
 
 from __future__ import annotations
@@ -39,6 +43,53 @@ MATHJAX_URL = "https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"
 # Older pandoc releases add a polyfill.io script next to MathJax. That domain changed
 # hands in 2024 and served malware, so the tag is stripped from every page.
 POLYFILL_TAG = re.compile(r'[ \t]*<script src="https://polyfill\.io/[^"]*"></script>\n?')
+
+# Regions masked out before looking for math that escaped its delimiters, in this order.
+# Pandoc's rules for inline math: the opening $ has a non-space on its right, the closing
+# $ has a non-space on its left and no digit after it.
+CODE_SPAN = re.compile(r"(`+)(.*?)\1", re.S)
+MASKS = [
+    re.compile(r"^(```|~~~).*?^\1[^\n]*$", re.M | re.S),  # fenced code
+    re.compile(r"<!--.*?-->", re.S),                      # HTML comments
+    re.compile(r"\\\$"),                                  # escaped dollar
+    re.compile(r"\$\$.*?\$\$", re.S),                     # display math
+    CODE_SPAN,
+    # Inline math may wrap onto the next line but not past a blank one.
+    re.compile(r"\$(?=\S)(?:[^$\\\n]|\\.|\n(?![ \t]*\n))*?(?<=\S)\$(?!\d)"),
+    re.compile(r"\]\([^)]*\)"),                           # link targets
+]
+TEX_IN_CODE = re.compile(r"\\[A-Za-z]{2,}|[\^_]\{")
+STRAY = [
+    (re.compile(r"\\[()\[\]]"), "\\( or \\[ delimiter; use $...$ or $$...$$"),
+    (re.compile(r"\\[A-Za-z]+"), "TeX command outside $...$"),
+    (re.compile(r"[A-Za-z0-9)}]\^[A-Za-z0-9{(\-]"), "superscript outside $...$"),
+    (re.compile(r"\b[A-Za-z]_(?:\{|[A-Za-z0-9]\b)"), "subscript outside $...$"),
+    (re.compile(r"\$"), "unpaired $ (escape a literal one: \\$) or space inside the $s"),
+]
+
+
+def _blank(match: re.Match) -> str:
+    # Keep newlines so line numbers survive masking.
+    return re.sub(r"[^\n]", " ", match.group(0))
+
+
+def lint_math(text: str) -> list[tuple[int, str, str]]:
+    """Find inline math that pandoc won't render: (line, problem, offending text)."""
+    problems = []
+    for mask in MASKS:
+        if mask is CODE_SPAN:
+            # Math written as code renders as code, not as math.
+            for m in CODE_SPAN.finditer(text):
+                if TEX_IN_CODE.search(m.group(2)):
+                    line = text.count("\n", 0, m.start()) + 1
+                    problems.append((line, "TeX in backticks renders as code", m.group(0)))
+        text = mask.sub(_blank, text)
+    for number, line in enumerate(text.splitlines(), 1):
+        for pattern, problem in STRAY:
+            found = [m.group(0) for m in pattern.finditer(line)]
+            if found:
+                problems.append((number, problem, " ".join(dict.fromkeys(found))))
+    return sorted(problems)
 
 
 def find_sources(root: Path) -> list[Path]:
@@ -76,12 +127,14 @@ def pandoc_command(root: Path) -> list[str] | None:
     return None
 
 
-def render(root: Path, files: list[str], force: bool) -> int:
-    base = pandoc_command(root)
-    if base is None:
-        print("Neither pandoc nor docker is on PATH; nothing rendered.", file=sys.stderr)
-        return 2
+def report_math(root: Path, src: Path) -> int:
+    problems = lint_math((root / src).read_text())
+    for line, problem, snippet in problems:
+        print(f"WARNING {src}:{line}: {problem}: {snippet}", file=sys.stderr)
+    return len(problems)
 
+
+def select_sources(root: Path, files: list[str]) -> list[Path]:
     if files:
         sources = []
         for f in files:
@@ -95,6 +148,22 @@ def render(root: Path, files: list[str], force: bool) -> int:
                 sources.append(path.relative_to(root))
     else:
         sources = find_sources(root)
+    return sources
+
+
+def check(root: Path, files: list[str]) -> int:
+    warned = sum(report_math(root, src) for src in select_sources(root, files))
+    print(f"{warned} math warning(s)")
+    return 1 if warned else 0
+
+
+def render(root: Path, files: list[str], force: bool) -> int:
+    base = pandoc_command(root)
+    if base is None:
+        print("Neither pandoc nor docker is on PATH; nothing rendered.", file=sys.stderr)
+        return 2
+
+    sources = select_sources(root, files)
     out_root = root / OUT_DIR
     out_root.mkdir(parents=True, exist_ok=True)
     (out_root / ".gitignore").write_text("*\n")
@@ -103,13 +172,14 @@ def render(root: Path, files: list[str], force: bool) -> int:
     # page stale, not just the ones whose notes changed.
     renderer_mtime = max(p.stat().st_mtime for p in (Path(__file__), FILTER, STYLE))
 
-    rendered = failed = 0
+    rendered = failed = warned = 0
     for src in sources:
         out = output_for(src)
         html = root / out
         newest_input = max((root / src).stat().st_mtime, renderer_mtime)
         if not force and html.exists() and html.stat().st_mtime >= newest_input:
             continue
+        warned += report_math(root, src)
         html.parent.mkdir(parents=True, exist_ok=True)
         cmd = base + [
             str(src), "-o", str(out),
@@ -125,7 +195,10 @@ def render(root: Path, files: list[str], force: bool) -> int:
             rendered += 1
             print(f"{src} -> {out}")
 
-    print(f"{rendered} rendered, {failed} failed, output in {OUT_DIR}/")
+    print(
+        f"{rendered} rendered, {failed} failed, {warned} math warning(s), "
+        f"output in {OUT_DIR}/"
+    )
     return 1 if failed else 0
 
 
@@ -136,8 +209,15 @@ def main() -> None:
     parser.add_argument(
         "--force", action="store_true", help="re-render even if up to date"
     )
+    parser.add_argument(
+        "--check", action="store_true",
+        help="only report inline math pandoc won't render; exit 1 if any",
+    )
     args = parser.parse_args()
-    sys.exit(render(Path(args.root).resolve(), args.files, args.force))
+    root = Path(args.root).resolve()
+    if args.check:
+        sys.exit(check(root, args.files))
+    sys.exit(render(root, args.files, args.force))
 
 
 if __name__ == "__main__":

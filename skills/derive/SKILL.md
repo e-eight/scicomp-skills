@@ -120,9 +120,9 @@ Numbered equations. Each step labelled: identity / definition / convention / app
 ## Checks performed
 | Check | Type | Result |
 | --- | --- | --- |
-| gamma -> 0 recovers <known case> | limiting | passes |
+| $\gamma \to 0$ recovers <known case> | limiting | passes |
 | dimensions of Eq. (12) | dimensional | passes |
-| Eq. (17) vs brute force, n=4 | numerical | agrees to 1e-14 |
+| Eq. (17) vs brute force, $n=4$ | numerical | agrees to $10^{-14}$ |
 
 ## Accumulated error
 The dropped terms and their order; what this implies for the error budget.
@@ -132,6 +132,15 @@ What brute-force computation now exists, at what sizes, and where the test lives
 
 ## Open steps
 ```
+
+**Math goes in dollars, all of it.** Every symbol or expression gets `$...$`, even a single
+$\epsilon$ or $n=4$, and that includes step labels and table cells. Keep the dollars tight
+around the math: `$x$`, not `$ x $`. Display equations use `$$...$$` with `\tag{N}`. Don't
+write math as bare TeX (`\epsilon`, `x^2`, `H_0` in prose), in `\(...\)`, or in backticks.
+None of those render in `render-notes`; they show up as plain text or code. Unicode symbols
+like ε or → are fine. After writing, run
+`python <render-notes-skill-dir>/scripts/render.py --check <record>` and fix whatever it
+reports.
 
 Equation numbers must be stable once code cites them. If a renumber is unavoidable, grep for
 citations and fix them in the same commit.

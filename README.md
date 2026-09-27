@@ -35,7 +35,7 @@ reusable discipline and can be reached for automatically when the task fits.
 | `scale-down-first` | toy → smoke → pilot → production. Never burn an allocation on an untested path. |
 | `layer-separation` | model / method / driver / analysis, with a one-way dependency rule and a `check_layers.py` for CI. Only for codebases outliving their first paper. |
 | `explain-derivation` | Writes a readable walk-through next to a verified derivation record: one move per step, reasons at each fork, and every added step checked with `check_identity.py`. Runs only when you ask. |
-| `render-notes` | Renders `notes/` and `CONVENTIONS.md` to HTML with pandoc (local or Docker) so math and tables are readable. Runs only when you ask. Output stays local. |
+| `render-notes` | Renders `notes/` and `CONVENTIONS.md` to HTML with pandoc (local or Docker) so math and tables are readable, and warns about inline math outside `$...$`. Runs only when you ask. Output stays local. |
 
 ## Contents
 

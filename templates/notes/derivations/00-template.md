@@ -4,7 +4,10 @@
 **Updated:** <date>
 **Conventions:** as CONVENTIONS.md <!-- or list deviations explicitly -->
 
-<!-- Written by /derive. Copy to NN-slug.md and add a row to README.md. -->
+<!-- Written by /derive. Copy to NN-slug.md and add a row to README.md.
+     All math goes in $...$ (inline, no space inside the dollars) or $$...$$ (display),
+     including in step labels and table cells. Bare \epsilon, x^2, H_0, \(...\), or TeX in
+     backticks won't render. Check with render-notes' render.py --check. -->
 
 ## Assumptions
 
@@ -30,7 +33,7 @@ $$ ... \tag{1} $$
 
 $$ ... \tag{2} $$
 
-*(approximation: drop <term>, error O(...))* Dropping the term ... on the grounds that ...
+*(approximation: drop <term>, error $\mathcal{O}(\dots)$)* Dropping the term ... on the grounds that ...
 
 $$ ... \tag{3} $$
 
@@ -45,12 +48,12 @@ $$ ... \tag{17} $$
 | Check | Type | Result |
 | --- | --- | --- |
 | dimensions of Eq. (n) | dimensional | |
-| <coupling> → 0 recovers <known case> | limiting | |
+| $<coupling> \to 0$ recovers <known case> | limiting | |
 | hermiticity / positivity / reality of Eq. (n) | symmetry | |
 | term count / degree of Eq. (n) | counting | |
 | Eq. (n) identity | symbolic (`check_identity.py`) | |
 | expansion order matches claim | symbolic (`check_series`) | |
-| Eq. (17) vs brute force, n=4 | numerical | |
+| Eq. (17) vs brute force, $n=4$ | numerical | |
 
 <!-- Special-case checks happen DURING the derivation, at the line in question — not here
      at the end. This table records them; it isn't the place they get done. -->

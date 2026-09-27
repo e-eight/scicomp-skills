@@ -47,6 +47,12 @@ record's equation numbers exactly, and any intermediate equation it adds gets a 
 suffix on the preceding number, like (3a) and (3b). The suffix shows at a glance that the
 equation exists only in the explanation.
 
+Math follows the record's rule in `derive`: all of it goes in `$...$` or `$$...$$`,
+including in step labels and tables. That matters more here, because an explanation has
+far more math in its prose than a record does. After writing, run
+`python <render-notes-skill-dir>/scripts/render.py --check <companion>` and fix whatever
+it reports.
+
 ## Per-step discipline
 
 For each step in the record, in order:
@@ -144,7 +150,7 @@ Taken from the record's accumulated error; nothing new is claimed here.
 ## Added steps and their checks
 | Step | Move | Check | Result |
 | --- | --- | --- | --- |
-| (3a) | trace cyclicity | `check_matrix_identity`, 3×3 | passes |
+| (3a) | trace cyclicity | `check_matrix_identity`, $3\times 3$ | passes |
 
 ## Gaps
 Steps that could not be reconstructed or checked, and what was reported.
