@@ -18,18 +18,19 @@
 
 ## Derivation
 
-<!-- Number every equation. Label every step: identity | definition | convention |
-     approximation (with order). A step that can't be labelled isn't understood. -->
+<!-- Number every equation. Label every step with its category (identity | definition |
+     convention | approximation, with order) AND the specific move. A step that can't be
+     labelled isn't understood. -->
 
 Starting from
 
 $$ ... \tag{1} $$
 
-*(identity)* Applying ...
+*(identity: <which one>)* Applying ...
 
 $$ ... \tag{2} $$
 
-*(approximation, error O(...))* Dropping the term ... on the grounds that ...
+*(approximation: drop <term>, error O(...))* Dropping the term ... on the grounds that ...
 
 $$ ... \tag{3} $$
 

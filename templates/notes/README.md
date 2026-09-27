@@ -40,6 +40,7 @@ exactly this reason.
 | `problem.md` | `scope-the-question` |
 | `literature.md`, `conventions-sources.md` | `literature-map` |
 | `derivations/NN-*.md` | `derive` |
+| `derivations/NN-*.explained.md` | `explain-derivation`, on request. Living, regenerated when the record changes |
 | `experiments/YYYY-MM-DD-*.md` | `design-experiment` |
 | `decisions/NNNN-*.md` | `derive`, `setup-scicomp-skills`, `layer-separation` |
 | `log.md` | `handoff` |

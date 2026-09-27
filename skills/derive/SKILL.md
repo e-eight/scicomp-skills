@@ -40,8 +40,11 @@ For each line of the derivation, do all four. They are individually cheap and co
 catch almost everything.
 
 **Label the move.** Every step is one of: an exact identity, a definition, a convention
-choice, or an approximation. Say which, in a word. Approximations additionally carry the
-order of the discarded term. A step that can't be labelled is a step that isn't understood.
+choice, or an approximation. Give the category, then name the specific move: "identity:
+cyclic property of the trace", "approximation: drop $\mathcal{O}(\epsilon^2)$". A few words
+are enough. Approximations also carry the order of the discarded term. A step that can't
+be labelled is a step that isn't understood. A category without the move makes the step
+hard to check and harder to reconstruct.
 
 **Dimensional check.** Every equation, every time. Both sides, including inside exponentials,
 logarithms, and trigonometric functions — an argument with dimensions is an error even when
@@ -132,6 +135,10 @@ What brute-force computation now exists, at what sizes, and where the test lives
 
 Equation numbers must be stable once code cites them. If a renumber is unavoidable, grep for
 citations and fix them in the same commit.
+
+The record is written for a reviewer, not a learner. Keep it short. When someone wants a
+readable walk-through, `explain-derivation` writes one next to the record and checks every
+step it adds.
 
 ## Failure modes
 

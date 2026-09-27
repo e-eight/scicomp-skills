@@ -14,6 +14,9 @@ unavoidable, grep for citations and fix them in the same commit.
 
 Start from `00-template.md`.
 
+A file `NN-slug.explained.md` next to a record is a walk-through written by
+`explain-derivation`. It is for reading, not citing: code always cites the record.
+
 ## Index
 
 | File | Derives | Status | Cited by |

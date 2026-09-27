@@ -34,12 +34,13 @@ reusable discipline and can be reached for automatically when the task fits.
 | `numerics-review` | Review a diff on a third axis beyond standards and spec: conditioning, precision, seeds, conventions, silent failure. |
 | `scale-down-first` | toy → smoke → pilot → production. Never burn an allocation on an untested path. |
 | `layer-separation` | model / method / driver / analysis, with a one-way dependency rule and a `check_layers.py` for CI. Only for codebases outliving their first paper. |
+| `explain-derivation` | Writes a readable walk-through next to a verified derivation record: one move per step, reasons at each fork, and every added step checked with `check_identity.py`. Runs only when you ask. |
 | `render-notes` | Renders `notes/` and `CONVENTIONS.md` to HTML with pandoc (local or Docker) so math and tables are readable. Runs only when you ask. Output stays local. |
 
 ## Contents
 
 ```
-skills/                     eleven SKILL.md files, four with bundled scripts
+skills/                     twelve SKILL.md files, four with bundled scripts
   derive/scripts/check_identity.py        randomized symbolic identity verification
   run-provenance/scripts/manifest.py      stdlib-only run manifest writer
   layer-separation/scripts/check_layers.py  import-graph layer checker for CI
@@ -103,7 +104,9 @@ they need no adaptation for research work:
 - `diagnosing-bugs` — the loop is right; `numerical-verification` supplies what "red" means
 - `wizard` — excellent for cluster onboarding, allocations, module loads, scheduler setup
 - `to-questionnaire` — when a scoping or derivation decision needs an advisor or collaborator
-- `teach` — for math you're learning rather than deriving; runs stateful across sessions
+- `teach` — for math you're learning rather than deriving; runs stateful across sessions.
+  Give it an `explain-derivation` companion as its source, not a bare `derive` record, and
+  run it outside the project repo, since it writes its workspace where it runs
 
 `design-experiment` replaces `grill-with-docs`, `scope-the-question` retargets `grill-me` at
 research framing, `literature-map` replaces `research`, and `CONVENTIONS.md` plays the role
