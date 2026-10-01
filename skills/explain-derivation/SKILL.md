@@ -59,7 +59,9 @@ For each step in the record, in order:
 
 **One move per step.** If the record's line from Eq. (3) to Eq. (4) does three things,
 the explanation shows three steps: (3a), (3b), then (4). A move is one substitution, one
-identity, one integration, one rearrangement, or one dropped term.
+identity, one integration, one rearrangement, or one dropped term. Write (3) itself out in
+full before (3a), never just its number, so every suffixed step follows from an equation
+the reader can see.
 
 **Name the specific move.** Not "identity" but "identity: cyclic property of the trace".
 Not "approximation" but "approximation: drop $\mathcal{O}(\epsilon^2)$ terms, valid
@@ -132,7 +134,8 @@ What the reader needs: definitions, prior results, conventions that differ from 
 textbook would use. Link CONVENTIONS.md and its glossary rather than repeating them.
 
 ## Walk-through
-The record's equation numbers, with letter-suffixed intermediate steps between them.
+The record's equations, written out in full with their numbers, and letter-suffixed
+intermediate steps between them.
 Each step: the equation, the named move, and why when there was a choice.
 
 ## Where the assumptions enter
