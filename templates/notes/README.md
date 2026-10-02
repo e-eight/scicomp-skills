@@ -13,9 +13,12 @@ the run that produced it.
 - `literature.md` — what's known
 - `conventions-sources.md` — how each paper writes things
 
-**Append-only records** are written once and never edited. They carry `**Status:**`.
+**Append-only records** are written once. Their content is never rewritten; the only
+permitted changes are the status line and, for derivations, the strikethrough-and-pointer
+correction described in `derivations/README.md`. They carry `**Status:**`.
 
-- `derivations/` — frozen once verified, because code cites their equation numbers
+- `derivations/` — equations frozen once verified, because code cites their numbers;
+  corrections are appended, and the old text is struck through, not erased
 - `experiments/` — one per experiment, dated
 - `decisions/` — ADRs; superseding one means writing a new one
 - `log.md` — session log, newest first
@@ -27,7 +30,7 @@ exactly this reason.
 ## Conventions
 
 - Derivations are **numbered, not dated** — the filename is an address that code cites, so
-  it must be stable. Corrections go in as a new section with the old one struck through.
+  it must be stable. Corrections go in as a new section; the old one is struck through and points to it.
   A renumber that breaks citations is worse than an ugly file.
 - Experiments are **dated**, one per file, and keep their status line current. An abandoned
   experiment with its reason recorded is worth more than an orphaned file.

@@ -28,6 +28,9 @@ the checks table, and the open steps.
 - **Status `superseded`:** explain the superseding record instead, unless the user wants
   to understand what went wrong in the old one.
 
+Within a `verified` record, skip struck-through sections and explain the section that
+supersedes them, unless the user wants to understand what went wrong.
+
 Establish who the reader is before writing. The default is someone with the field's
 background who hasn't seen this derivation, like a new group member. If the user names a
 different reader (themselves six months from now, a collaborator from another field, a
@@ -109,7 +112,7 @@ Filling in a record will sometimes turn up a problem. There are two cases.
   is. Try a different route. If every route fails, **stop**. The record may have an
   error, and code may already cite it. Report the failing step with the counterexample
   `check_identity` returned. Don't publish an explanation that works around it. Fixing
-  the record is `derive`'s job, and the record's rules for corrections apply.
+  the record is `derive`'s job, and the correction rules in `derive` apply.
 
 Either way, the explanation doesn't add claims. It may not add results, widen the regime
 of validity, or drop assumptions. Interpretation is welcome, but label it as

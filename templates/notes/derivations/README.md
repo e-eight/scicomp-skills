@@ -8,9 +8,16 @@ Code citing a result names the equation:
 # implements Eq. (17) of notes/derivations/02-error-bound.md
 ```
 
-Once a derivation is verified and cited, treat it as frozen. Corrections go in as a new
-numbered section with the old one struck through, never as a silent edit. If a renumber is
-unavoidable, grep for citations and fix them in the same commit.
+Once a derivation is verified and cited, its equations and their numbers are frozen. Never
+rewrite one silently. A correction is the one permitted change:
+
+- Add a new numbered section with the corrected result. It names the section it replaces
+  and says why.
+- In the old section, strike through the wrong text and add one line, such as
+  "Superseded by §4, Eq. (23)". Change nothing else there, and keep its number.
+- Grep for citations of the superseded equation and re-point them in the same commit.
+
+If a renumber is unavoidable, grep for citations and fix them in the same commit.
 
 Start from `00-template.md`.
 

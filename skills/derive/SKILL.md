@@ -145,6 +145,13 @@ reports.
 Equation numbers must be stable once code cites them. If a renumber is unavoidable, grep for
 citations and fix them in the same commit.
 
+**Corrections.** A verified record's equations are frozen, never silently rewritten. To
+correct one, add a new numbered section with the fixed result that names the section it
+replaces and says why. In the old section, strike through the wrong text and add one line,
+such as "Superseded by §4, Eq. (23)". Change nothing else there, and keep its number. Then
+grep for citations of the superseded equation and re-point them in the same commit. Set
+`superseded` as the record's status only when the whole record is replaced by a new one.
+
 The record is written for a reviewer, not a learner. Keep it short. When someone wants a
 readable walk-through, `explain-derivation` writes one next to the record and checks every
 step it adds.
